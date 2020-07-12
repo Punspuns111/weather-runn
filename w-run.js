@@ -56,3 +56,6 @@ anime ({
     loop: true,
 })
 
+$(window).load(function() {      
+    alert('page is loaded'); 
+});
