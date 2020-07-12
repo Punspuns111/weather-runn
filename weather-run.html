@@ -113,6 +113,7 @@
     </div>
     <script>
         var message = document.getElementById("message");
+        var city = "Hanoi";
         /*get location*/
         $.ajax({
             url: 'http://api.ipstack.com/check' + '?access_key=84385972d3d6023c35d703318d3d1eb2',
@@ -122,6 +123,7 @@
                 getCityWeather(city);
             }
         });
+    
         /*weather extract*/
         function getCityWeather() {
             var url = "http://api.openweathermap.org/data/2.5/weather?units=metric&q=" + city +
