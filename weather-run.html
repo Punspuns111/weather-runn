@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Weather Run!</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="1x/icon-run.png" type="image/icon type">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="webfontkit-20200614-033810/stylesheet.css" type="text/css" charset="utf-8" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.0.8/fullpage.min.css"
+        type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        type="text/css">
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.0.8/fullpage.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#fullpage').fullpage({
+                navigation: true,
+                navigationPosition: 'right',
+                controlArrows: true
+            });
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="w-run.css">
+</head>
+
+<body class="bg-1">
+    <div id="fullpage">
+        <div class="section container text-center">
+            <div class="row">
+                <div class="weather col align-self-center text-white">
+                    <div class="data container">
+                        <p id="location"></p>
+                        <div class="row justify-content-center">
+                            <p class="col-lg-2 col-sm-3 col-md-3" id="temp"></p>
+                            <img class="ml-2 ml-lg-4 ml-sm-5 ml-md-2 ml-xl-2" style="height: 105px; width: 105px;" id="logo"
+                                src="">
+                        </div>
+                        <p id="weather"></p>
+                    </div>
+                    <p id="message"></p>
+                    
+                    <div class="scrolldown text-white"><i class="fa fa-arrow-down" aria-hidden="true"></i></div>
+                </div>
+            </div>
+            
+        </div>
+
+
+
+        <div class="section bg-2">
+            <div class="container text-center text-white">
+                <div class="music">
+                    <div class="title text-white text-center">
+                        <span>Music booster &#128170</span>
+                    </div>
+                    <br class="mobile-break">
+                    <div class="container text-center pb-2">
+                        <div class="playlist m-2">
+                            <div class="inner-circle container embed-responsive embed-responsive-16by9">
+                                <iframe id="player" src="https://open.spotify.com/embed/playlist/7mZZkjpyoY83wHbssEtzNF"
+                                    frameborder="2" allowtransparency="true" allow="encrypted-media"></iframe>
+                            </div>
+                        </div>
+                        <br>
+                        <p class="suggest text-white">Or find your own playlist of your favourite genre!</p>
+                        <select id="genre" class="dropdown-toggle" style="width: 270px; height: 32px;">
+                            <option value="pop">Pop</option>
+                            <option value="kpop">KPop</option>
+                            <option value="rock">Rock</option>
+                            <option value="indie">Indie</option>
+                            <option value="edm">EDM</option>
+                        </select>
+                        <br class="mobile-break">
+                        <br class="mobile-break">
+                        <button id="submit" class="text-white" onclick="playlist()">Find!</button>
+                    </div>
+                </div>
+            </div>
+            <div class="ytb">
+                <div class="title text-white text-center">
+                    <span>Training Videos &#128170</span>
+                </div>
+                <div class="container text-center pb-2">
+                    <div class="training-vid mt-3">
+                        <div class="container inner-circle embed-responsive embed-responsive-16by9">
+                            <iframe class="embed-responsive-item" id="video"
+                                src="https://www.youtube.com/embed/CGmr02bfHUo" frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <br>
+                    <p class="suggest text-white">Or train with your own preference!</p>
+                    <select id="train-vid" class="dropdown-toggle" style="width: 40%;">
+                        <option value="full-bod">Full Body</option>
+                        <option value="arm">Arm Day</option>
+                        <option value="abs">Abs Day</option>
+                        <option value="leg">Leg Day</option>
+                        <option value="stretch">Stretching</option>
+                    </select>
+                    <br class="mobile-break">
+                    <br class="mobile-break">
+                    <button class="text-white" id="submit" onclick="training()">Find!</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        var message = document.getElementById("message");
+        /*get location*/
+        $.ajax({
+            url: 'http://api.ipstack.com/check' + '?access_key=84385972d3d6023c35d703318d3d1eb2',
+            dataType: 'jsonp',
+            success: function (json) {
+                city = json.city;
+                getCityWeather(city);
+            }
+        });
+        /*weather extract*/
+        function getCityWeather() {
+            var url = "http://api.openweathermap.org/data/2.5/weather?units=metric&q=" + city +
+                "&appid=94f19c0dd36db95201f1feecd567a03b";
+
+            $.getJSON(url, function (data) {
+
+                cityname = data.name;
+                dto = new Date();
+                dto.setTime(Number(data.dt) * 1000);
+                weather = data.weather[0].main;
+                temp = Number(data.main.temp);
+                temp_max = Number(data.main.temp_max);
+                temp_min = Number(data.main.temp_min);
+
+                document.getElementById('location').textContent = city;
+
+                if (weather == 'Rain') {
+                    jQuery('.bg-1').css({
+                        'background-image': 'url("1x/bg-rain.png")'
+                    });
+                    document.getElementById('message').textContent =
+                        "No matter the rain, we can still home-train!";
+                    document.getElementById('logo').src = "rain.svg";
+                    jQuery('.music').replaceWith(jQuery('.ytb'));
+                } else {
+                    jQuery('.ytb').replaceWith(jQuery('.music'));
+                };
+
+
+                if ((temp >= 30) && (weather != 'Rain')) {
+                    jQuery('.bg-1').css({
+                        'background-image': 'url("1x/bg-sun.png")'
+                    });
+                    message.textContent = "Let's work out, but remember to stay hydrated!";
+                    document.getElementById('logo').src = "sunny.svg";
+
+                } else if ((temp >= 18) && (weather != 'Rain') || (weather == 'Clouds')) {
+                    jQuery('.bg-1').css({
+                        'background-image': 'url("1x/bg-clouds.png")'
+                    });
+                    message.textContent =
+                        "Such beautiful weather to run!";
+                    document.getElementById('logo').src = "clouds.svg";
+                } else {
+                    jQuery('.bg-1').css({
+                        'background-image': 'url("1x/bg-chill.png")'
+                    });
+                    document.getElementById("message").src =
+                        "It's chill out, keep warm during training!";
+                    document.getElementById('logo').src = "mist.svg";
+                }
+                document.getElementById('weather').textContent = weather;
+                document.getElementById('temp').textContent = Math.ceil(temp) + "°C";
+
+                var domwinfo = document.getElementById("weather");
+                domwinfo.innerHTML = htmltext;
+            });
+        };
+    </script>
+    <script language="JavaScript" type="text/javascript" src="w-run.js"></script>
+</body>
+
+</html>
