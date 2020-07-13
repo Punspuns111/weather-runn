@@ -70,6 +70,6 @@ function onReady(callback) {
   }
   
   onReady(function() {
-    setVisible('.page', true);
+    setVisible('body', true);
     setVisible('#loading', false);
   });

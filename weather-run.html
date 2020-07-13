@@ -20,7 +20,8 @@
             $('#fullpage').fullpage({
                 navigation: true,
                 navigationPosition: 'right',
-                controlArrows: true
+                controlArrows: true,
+                anchors: ['section1', 'section2']
             });
         });
     </script>
@@ -29,32 +30,35 @@
 
 <body class="bg-1">
     <div id="fullpage">
-        <div class="section container text-center">
+        <div class="section container text-center" data-anchor="section1">
             <div class="row">
                 <div class="weather col align-self-center text-white">
                     <div class="data container">
                         <p id="location"></p>
                         <div class="row justify-content-center">
-                            <p class="col-lg-2 col-sm-3 col-md-3" id="temp"></p>
-                            <img class="ml-2 ml-lg-4 ml-sm-5 ml-md-2 ml-xl-2" style="height: 105px; width: 105px;" id="logo"
-                                src="">
+                            <p class="col-lg-2 col-sm-3 col-md-3 mr-sm-2" id="temp"></p>
+                            <img class="ml-2 ml-lg-4 ml-sm-5 ml-md-2 ml-xl-2" style="height: 105px; width: 105px;"
+                                id="logo" src="">
                         </div>
                         <p id="weather"></p>
                     </div>
                     <p id="message"></p>
                     
-                    <div class="scrolldown text-white"><i class="fa fa-arrow-down" aria-hidden="true"></i></div>
+                    <section id="scrolldown" class="demo">
+                        <a href="#section2"><span></span></a>
+                    </section>
+                    
                 </div>
             </div>
-            
+
         </div>
 
 
 
-        <div class="section bg-2">
+        <div class="section bg-2" data-anchor="section2">
             <div class="container text-center text-white">
                 <div class="music">
-                    <div class="title text-white text-center">
+                    <div class="title run-in text-white text-center">
                         <span>Music booster &#128170</span>
                     </div>
                     <br class="mobile-break">
@@ -110,11 +114,9 @@
             </div>
         </div>
     </div>
-    <div id="loading"></div>
     </div>
     <script>
         var message = document.getElementById("message");
-        var city = "Hanoi";
         /*get location*/
         $.ajax({
             url: 'http://api.ipstack.com/check' + '?access_key=84385972d3d6023c35d703318d3d1eb2',
@@ -124,7 +126,6 @@
                 getCityWeather(city);
             }
         });
-    
         /*weather extract*/
         function getCityWeather() {
             var url = "http://api.openweathermap.org/data/2.5/weather?units=metric&q=" + city +
@@ -142,41 +143,40 @@
 
                 document.getElementById('location').textContent = city;
 
-                if (weather == 'Rain') {
+                if ((weather == 'Rain') || (weather == 'Drizzle')) {
                     jQuery('.bg-1').css({
                         'background-image': 'url("1x/bg-rain.png")'
                     });
                     document.getElementById('message').textContent =
                         "No matter the rain, we can still home-train!";
-                    document.getElementById('logo').src = "rain.svg";
+                    document.getElementById('logo').src = "rainy.svg";
                     jQuery('.music').replaceWith(jQuery('.ytb'));
                 } else {
                     jQuery('.ytb').replaceWith(jQuery('.music'));
+
+                    if (temp >= 30) {
+                        jQuery('.bg-1').css({
+                            'background-image': 'url("1x/bg-sun.png")'
+                        });
+                        message.textContent = "Let's work out, but remember to stay hydrated!";
+                        document.getElementById('logo').src = "sunny.svg";
+
+                    } else if ((temp >= 18) || (weather == 'Clouds')) {
+                        jQuery('.bg-1').css({
+                            'background-image': 'url("1x/bg-clouds.png")'
+                        });
+                        message.textContent =
+                            "Such beautiful weather to run!";
+                        document.getElementById('logo').src = "clouds.svg";
+                    } else {
+                        jQuery('.bg-1').css({
+                            'background-image': 'url("1x/bg-chill.png")'
+                        });
+                        document.getElementById("message").src =
+                            "It's chill out, keep warm during training!";
+                        document.getElementById('logo').src = "snow.svg";
+                    }
                 };
-
-
-                if ((temp >= 30) && (weather != 'Rain')) {
-                    jQuery('.bg-1').css({
-                        'background-image': 'url("1x/bg-sun.png")'
-                    });
-                    message.textContent = "Let's work out, but remember to stay hydrated!";
-                    document.getElementById('logo').src = "sunny.svg";
-
-                } else if ((temp >= 18) && (weather != 'Rain') || (weather == 'Clouds')) {
-                    jQuery('.bg-1').css({
-                        'background-image': 'url("1x/bg-clouds.png")'
-                    });
-                    message.textContent =
-                        "Such beautiful weather to run!";
-                    document.getElementById('logo').src = "clouds.svg";
-                } else {
-                    jQuery('.bg-1').css({
-                        'background-image': 'url("1x/bg-chill.png")'
-                    });
-                    document.getElementById("message").src =
-                        "It's chill out, keep warm during training!";
-                    document.getElementById('logo').src = "mist.svg";
-                }
                 document.getElementById('weather').textContent = weather;
                 document.getElementById('temp').textContent = Math.ceil(temp) + "°C";
 
